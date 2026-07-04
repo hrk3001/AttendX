@@ -31,6 +31,11 @@ function Students() {
   function addStudent(student) {
     setStudents((prev) => [...prev, student]);
   }
+  function deleteStudent(id) {
+  setStudents((prev) =>
+    prev.filter((student) => student.id !== id)
+  );
+}
 
   return (
     <DashboardLayout>
@@ -46,7 +51,10 @@ function Students() {
 
       <StudentForm addStudent={addStudent} />
 
-      <StudentTable students={students} />
+      <StudentTable
+  students={students}
+  deleteStudent={deleteStudent}
+/>
     </DashboardLayout>
   );
 }
