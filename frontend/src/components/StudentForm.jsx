@@ -2,7 +2,6 @@ import { useState } from "react";
 
 function StudentForm({ addStudent }) {
   const [form, setForm] = useState({
-    id: "",
     name: "",
     department: "",
     attendance: "",
@@ -19,7 +18,6 @@ function StudentForm({ addStudent }) {
     e.preventDefault();
 
     if (
-      !form.id ||
       !form.name ||
       !form.department ||
       !form.attendance
@@ -29,7 +27,8 @@ function StudentForm({ addStudent }) {
     }
 
     addStudent({
-      ...form,
+      name: form.name,
+      department: form.department,
       attendance: Number(form.attendance),
       status:
         Number(form.attendance) >= 90
@@ -40,7 +39,6 @@ function StudentForm({ addStudent }) {
     });
 
     setForm({
-      id: "",
       name: "",
       department: "",
       attendance: "",
@@ -50,16 +48,8 @@ function StudentForm({ addStudent }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-8 grid grid-cols-5 gap-4"
+      className="mb-8 grid grid-cols-4 gap-4"
     >
-      <input
-        name="id"
-        value={form.id}
-        onChange={handleChange}
-        placeholder="Roll No"
-        className="rounded-lg border border-slate-700 bg-slate-900 p-3 text-white"
-      />
-
       <input
         name="name"
         value={form.name}
@@ -78,6 +68,7 @@ function StudentForm({ addStudent }) {
 
       <input
         name="attendance"
+        type="number"
         value={form.attendance}
         onChange={handleChange}
         placeholder="Attendance %"

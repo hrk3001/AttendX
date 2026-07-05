@@ -1,41 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import StudentForm from "../components/StudentForm";
 import StudentTable from "../components/StudentTable";
 
-function Students() {
-  const [students, setStudents] = useState([
-    {
-      id: 101,
-      name: "Harish",
-      department: "CSE",
-      attendance: 92,
-      status: "Excellent",
-    },
-    {
-      id: 102,
-      name: "Rahul",
-      department: "IT",
-      attendance: 86,
-      status: "Good",
-    },
-    {
-      id: 103,
-      name: "Kavin",
-      department: "AIDS",
-      attendance: 68,
-      status: "Low",
-    },
-  ]);
+import {
+  getStudents,
+  addStudent,
+  deleteStudent,
+} from "../api/studentApi";
 
-  function addStudent(student) {
-    setStudents((prev) => [...prev, student]);
+function Students() {
+  const [students, setStudents] = useState([]);
+
+  useEffect(() => {
+    loadStudents();
+  }, []);
+
+  async function loadStudents() {
+    try {
+      const response = await getStudents();
+      setStudents(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   }
-  function deleteStudent(id) {
-  setStudents((prev) =>
-    prev.filter((student) => student.id !== id)
-  );
-}
+
+  async function handleAddStudent(student) {
+    try {
+      await addStudent(student);
+      loadStudents();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleDeleteStudent(id) {
+    try {
+      await deleteStudent(id);
+      loadStudents();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <DashboardLayout>
@@ -49,12 +55,12 @@ function Students() {
         </p>
       </div>
 
-      <StudentForm addStudent={addStudent} />
+      <StudentForm addStudent={handleAddStudent} />
 
       <StudentTable
-  students={students}
-  deleteStudent={deleteStudent}
-/>
+        students={students}
+        deleteStudent={handleDeleteStudent}
+      />
     </DashboardLayout>
   );
 }

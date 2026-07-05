@@ -47,14 +47,16 @@ function StudentTable({ students, deleteStudent }) {
                 </span>
               </td>
 
-              <td className="px-6 py-4 text-center">
-                <button
-                  onClick={() => deleteStudent(student.id)}
-                  className="rounded-lg bg-red-600 p-2 text-white transition hover:bg-red-500"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </td>
+             <button
+  onClick={() => {
+    if (window.confirm("Are you sure you want to delete this student?")) {
+      deleteStudent(student.id);
+    }
+  }}
+  className="rounded-lg bg-red-600 p-2 text-white transition hover:bg-red-500"
+>
+  <Trash2 size={18} />
+</button>
             </tr>
           ))}
         </tbody>
