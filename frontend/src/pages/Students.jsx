@@ -7,10 +7,12 @@ import {
   getStudents,
   addStudent,
   deleteStudent,
+  updateStudent,
 } from "../api/studentApi";
 
 function Students() {
   const [students, setStudents] = useState([]);
+  const [editingStudent, setEditingStudent] = useState(null);
 
   useEffect(() => {
     loadStudents();
@@ -25,9 +27,15 @@ function Students() {
     }
   }
 
-  async function handleAddStudent(student) {
+  async function handleSaveStudent(student) {
     try {
-      await addStudent(student);
+      if (editingStudent) {
+        await updateStudent(editingStudent.id, student);
+        setEditingStudent(null);
+      } else {
+        await addStudent(student);
+      }
+
       loadStudents();
     } catch (error) {
       console.error(error);
@@ -55,11 +63,15 @@ function Students() {
         </p>
       </div>
 
-      <StudentForm addStudent={handleAddStudent} />
+      <StudentForm
+        addStudent={handleSaveStudent}
+        editingStudent={editingStudent}
+      />
 
       <StudentTable
         students={students}
         deleteStudent={handleDeleteStudent}
+        setEditingStudent={setEditingStudent}
       />
     </DashboardLayout>
   );

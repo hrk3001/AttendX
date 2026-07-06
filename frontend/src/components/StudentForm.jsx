@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function StudentForm({ addStudent }) {
+function StudentForm({ addStudent, editingStudent }) {
   const [form, setForm] = useState({
     name: "",
     department: "",
     attendance: "",
   });
+
+  useEffect(() => {
+    if (editingStudent) {
+      setForm({
+        name: editingStudent.name,
+        department: editingStudent.department,
+        attendance: editingStudent.attendance,
+      });
+    } else {
+      setForm({
+        name: "",
+        department: "",
+        attendance: "",
+      });
+    }
+  }, [editingStudent]);
 
   function handleChange(e) {
     setForm({
@@ -17,11 +33,7 @@ function StudentForm({ addStudent }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (
-      !form.name ||
-      !form.department ||
-      !form.attendance
-    ) {
+    if (!form.name || !form.department || !form.attendance) {
       alert("Please fill all fields");
       return;
     }
@@ -38,11 +50,13 @@ function StudentForm({ addStudent }) {
           : "Low",
     });
 
-    setForm({
-      name: "",
-      department: "",
-      attendance: "",
-    });
+    if (!editingStudent) {
+      setForm({
+        name: "",
+        department: "",
+        attendance: "",
+      });
+    }
   }
 
   return (
@@ -67,8 +81,8 @@ function StudentForm({ addStudent }) {
       />
 
       <input
-        name="attendance"
         type="number"
+        name="attendance"
         value={form.attendance}
         onChange={handleChange}
         placeholder="Attendance %"
@@ -79,7 +93,7 @@ function StudentForm({ addStudent }) {
         type="submit"
         className="rounded-lg bg-blue-600 font-semibold text-white hover:bg-blue-500"
       >
-        Add Student
+        {editingStudent ? "Update Student" : "Add Student"}
       </button>
     </form>
   );

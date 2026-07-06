@@ -1,12 +1,16 @@
-import { Trash2 } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 
-function StudentTable({ students, deleteStudent }) {
+function StudentTable({
+  students,
+  deleteStudent,
+  setEditingStudent,
+}) {
   return (
     <div className="overflow-hidden rounded-2xl bg-slate-900 shadow-lg">
       <table className="w-full">
         <thead className="bg-slate-800 text-slate-300">
           <tr>
-            <th className="px-6 py-4 text-left">Roll No</th>
+            <th className="px-6 py-4 text-left">ID</th>
             <th className="px-6 py-4 text-left">Name</th>
             <th className="px-6 py-4 text-left">Department</th>
             <th className="px-6 py-4 text-left">Attendance</th>
@@ -23,7 +27,9 @@ function StudentTable({ students, deleteStudent }) {
             >
               <td className="px-6 py-4 text-white">{student.id}</td>
 
-              <td className="px-6 py-4 text-white">{student.name}</td>
+              <td className="px-6 py-4 text-white">
+                {student.name}
+              </td>
 
               <td className="px-6 py-4 text-slate-300">
                 {student.department}
@@ -47,16 +53,31 @@ function StudentTable({ students, deleteStudent }) {
                 </span>
               </td>
 
-             <button
-  onClick={() => {
-    if (window.confirm("Are you sure you want to delete this student?")) {
-      deleteStudent(student.id);
-    }
-  }}
-  className="rounded-lg bg-red-600 p-2 text-white transition hover:bg-red-500"
->
-  <Trash2 size={18} />
-</button>
+              <td className="px-6 py-4">
+                <div className="flex justify-center gap-2">
+                  <button
+                    onClick={() => setEditingStudent(student)}
+                    className="rounded-lg bg-yellow-500 p-2 text-white hover:bg-yellow-400"
+                  >
+                    <Pencil size={18} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "Are you sure you want to delete this student?"
+                        )
+                      ) {
+                        deleteStudent(student.id);
+                      }
+                    }}
+                    className="rounded-lg bg-red-600 p-2 text-white hover:bg-red-500"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>
