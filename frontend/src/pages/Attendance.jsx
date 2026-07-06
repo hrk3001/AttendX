@@ -1,20 +1,35 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { getStudents } from "../api/studentApi";
-import { saveAttendance } from "../api/attendanceApi";
+import {
+  saveAttendance,
+  getAttendance,
+} from "../api/attendanceApi";
 
 function Attendance() {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
 
+  const today = new Date().toISOString().split("T")[0];
+
   useEffect(() => {
-    loadStudents();
+    loadData();
   }, []);
 
-  async function loadStudents() {
+  async function loadData() {
     try {
-      const response = await getStudents();
-      setStudents(response.data);
+      const studentsResponse = await getStudents();
+      const attendanceResponse = await getAttendance(today);
+
+      setStudents(studentsResponse.data);
+
+      const attendanceMap = {};
+
+      attendanceResponse.data.forEach((record) => {
+        attendanceMap[record.studentId] = record.present;
+      });
+
+      setAttendance(attendanceMap);
     } catch (error) {
       console.error(error);
     }
@@ -28,19 +43,18 @@ function Attendance() {
   }
 
   async function handleSave() {
-    const today = new Date().toISOString().split("T")[0];
-
     try {
       for (const student of students) {
         await saveAttendance({
           studentId: student.id,
           studentName: student.name,
           date: today,
-          present: attendance[student.id] || false,
+          present: attendance[student.id] ?? false,
         });
       }
 
       alert("Attendance saved successfully!");
+      loadData();
     } catch (error) {
       console.error(error);
       alert("Failed to save attendance.");
@@ -86,10 +100,8 @@ function Attendance() {
                 <td className="p-4 text-center">
                   <input
                     type="checkbox"
-                    checked={attendance[student.id] || false}
-                    onChange={() =>
-                      toggleAttendance(student.id)
-                    }
+                    checked={attendance[student.id] ?? false}
+                    onChange={() => toggleAttendance(student.id)}
                     className="h-5 w-5"
                   />
                 </td>
