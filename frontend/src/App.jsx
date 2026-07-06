@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import AttendanceHistory from "./pages/AttendanceHistory";
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import Attendance from "./pages/Attendance";
@@ -17,6 +17,10 @@ function App() {
         <Route path="/students" element={<Students />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/settings" element={<Settings />} />
+        <Route
+  path="/attendance-history"
+  element={<AttendanceHistory />}
+/>
       </Routes>
     </BrowserRouter>
   );

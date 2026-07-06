@@ -12,6 +12,7 @@ import {
 
 function Students() {
   const [students, setStudents] = useState([]);
+  const [search, setSearch] = useState("");
   const [editingStudent, setEditingStudent] = useState(null);
 
   useEffect(() => {
@@ -51,6 +52,11 @@ function Students() {
     }
   }
 
+  const filteredStudents = students.filter((student) =>
+    student.name.toLowerCase().includes(search.toLowerCase()) ||
+    student.department.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <DashboardLayout>
       <div className="mb-8">
@@ -63,13 +69,23 @@ function Students() {
         </p>
       </div>
 
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="🔍 Search by name or department..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-white outline-none focus:border-blue-500"
+        />
+      </div>
+
       <StudentForm
         addStudent={handleSaveStudent}
         editingStudent={editingStudent}
       />
 
       <StudentTable
-        students={students}
+        students={filteredStudents}
         deleteStudent={handleDeleteStudent}
         setEditingStudent={setEditingStudent}
       />

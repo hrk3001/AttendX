@@ -4,6 +4,7 @@ import {
   ClipboardCheck,
   FileText,
   Settings,
+  History,
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -19,6 +20,11 @@ const menuItems = [
     label: "Attendance",
     path: "/attendance",
   },
+  {
+  icon: History,
+  label: "Attendance History",
+  path: "/attendance-history",
+},
   {
     icon: Users,
     label: "Students",
