@@ -1,48 +1,89 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+
 import PasswordInput from "../components/PasswordInput";
 import Button from "../components/Button";
 import Input from "../components/Input";
 
+import { login } from "../api/authApi";
+
 function LoginPage() {
   const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Auto-login if already logged in
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("loggedIn");
+
+    if (loggedIn) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
+
+  async function handleLogin() {
+    if (!email || !password) {
+      alert("Please enter Email and Password");
+      return;
+    }
+
+    try {
+      const user = await login(email, password);
+
+      if (user) {
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("admin", JSON.stringify(user));
+
+        navigate("/dashboard");
+      } else {
+        alert("Invalid Email or Password");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Invalid Email or Password");
+    }
+  }
+
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-gray-900 to-blue-950">
-      <motion.div
-  className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl"
-  animate={{
-    x: [0, 40, 0],
-    y: [0, 30, 0],
-  }}
-  transition={{
-    duration: 8,
-    repeat: Infinity,
-    ease: "easeInOut",
-  }}
-/>
-
-<motion.div
-  className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl"
-  animate={{
-    x: [0, -40, 0],
-    y: [0, -30, 0],
-  }}
-  transition={{
-    duration: 10,
-    repeat: Infinity,
-    ease: "easeInOut",
-  }}
-/>
 
       <motion.div
-  className="w-[420px] rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-10 shadow-2xl"
-  initial={{ opacity: 0, scale: 0.8, y: 80 }}
-  animate={{ opacity: 1, scale: 1, y: 0 }}
-  transition={{
-    duration: 1.2,
-    ease: "easeOut",
-  }}
->
+        className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl"
+        animate={{
+          x: [0, 40, 0],
+          y: [0, 30, 0],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      <motion.div
+        className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl"
+        animate={{
+          x: [0, -40, 0],
+          y: [0, -30, 0],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      <motion.div
+        className="w-[420px] rounded-3xl border border-white/10 bg-white/5 p-10 shadow-2xl backdrop-blur-xl"
+        initial={{ opacity: 0, scale: 0.8, y: 80 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{
+          duration: 1.2,
+          ease: "easeOut",
+        }}
+      >
         <div className="mb-6 flex justify-center">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-600 text-4xl shadow-lg shadow-blue-600/40">
             🎓
@@ -58,9 +99,18 @@ function LoginPage() {
         </p>
 
         <div className="space-y-4">
-          <Input type="email" placeholder="Email" />
 
-          <PasswordInput />
+          <Input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <PasswordInput
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
           <div className="flex items-center justify-between text-sm text-gray-400">
             <label className="flex cursor-pointer items-center gap-2">
@@ -79,9 +129,9 @@ function LoginPage() {
             </a>
           </div>
 
-          <Button onClick={() => navigate("/dashboard")}>
-  🚀 Sign In
-</Button>
+          <Button onClick={handleLogin}>
+            🚀 Sign In
+          </Button>
 
           <div className="mt-6 flex justify-center gap-3">
             <button className="rounded-full bg-blue-600 px-4 py-2 text-sm text-white">
@@ -96,9 +146,9 @@ function LoginPage() {
               Admin
             </button>
           </div>
+
         </div>
       </motion.div>
-
     </div>
   );
 }
