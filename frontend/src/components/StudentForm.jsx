@@ -2,23 +2,29 @@ import { useState, useEffect } from "react";
 
 function StudentForm({ addStudent, editingStudent }) {
   const [form, setForm] = useState({
+    rollNo: "",
     name: "",
-    department: "",
-    attendance: "",
+    department: "CSE",
+    year: "1",
+    section: "A",
   });
 
   useEffect(() => {
     if (editingStudent) {
       setForm({
-        name: editingStudent.name,
-        department: editingStudent.department,
-        attendance: editingStudent.attendance,
+        rollNo: editingStudent.rollNo || "",
+        name: editingStudent.name || "",
+        department: editingStudent.department || "CSE",
+        year: editingStudent.year || "1",
+        section: editingStudent.section || "A",
       });
     } else {
       setForm({
+        rollNo: "",
         name: "",
-        department: "",
-        attendance: "",
+        department: "CSE",
+        year: "1",
+        section: "A",
       });
     }
   }, [editingStudent]);
@@ -33,28 +39,32 @@ function StudentForm({ addStudent, editingStudent }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!form.name || !form.department || !form.attendance) {
+    if (
+      !form.rollNo ||
+      !form.name ||
+      !form.department ||
+      !form.year ||
+      !form.section
+    ) {
       alert("Please fill all fields");
       return;
     }
 
     addStudent({
+      rollNo: form.rollNo,
       name: form.name,
       department: form.department,
-      attendance: Number(form.attendance),
-      status:
-        Number(form.attendance) >= 90
-          ? "Excellent"
-          : Number(form.attendance) >= 75
-          ? "Good"
-          : "Low",
+      year: Number(form.year),
+      section: form.section,
     });
 
     if (!editingStudent) {
       setForm({
+        rollNo: "",
         name: "",
-        department: "",
-        attendance: "",
+        department: "CSE",
+        year: "1",
+        section: "A",
       });
     }
   }
@@ -62,38 +72,68 @@ function StudentForm({ addStudent, editingStudent }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-8 grid grid-cols-4 gap-4"
+      className="mb-8 grid grid-cols-6 gap-4"
     >
+      <input
+        name="rollNo"
+        value={form.rollNo}
+        onChange={handleChange}
+        placeholder="Roll No"
+        className="rounded-xl border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-blue-500"
+      />
+
       <input
         name="name"
         value={form.name}
         onChange={handleChange}
-        placeholder="Name"
-        className="rounded-lg border border-slate-700 bg-slate-900 p-3 text-white"
+        placeholder="Student Name"
+        className="rounded-xl border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-blue-500"
       />
 
-      <input
+      <select
         name="department"
         value={form.department}
         onChange={handleChange}
-        placeholder="Department"
-        className="rounded-lg border border-slate-700 bg-slate-900 p-3 text-white"
-      />
+        className="rounded-xl border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-blue-500"
+      >
+        <option value="CSE">CSE</option>
+        <option value="ECE">ECE</option>
+        <option value="EEE">EEE</option>
+        <option value="MECH">MECH</option>
+        <option value="CIVIL">CIVIL</option>
+        <option value="IT">IT</option>
+        <option value="AIDS">AIDS</option>
+      </select>
 
-      <input
-        type="number"
-        name="attendance"
-        value={form.attendance}
+      <select
+        name="year"
+        value={form.year}
         onChange={handleChange}
-        placeholder="Attendance %"
-        className="rounded-lg border border-slate-700 bg-slate-900 p-3 text-white"
-      />
+        className="rounded-xl border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-blue-500"
+      >
+        <option value="1">I</option>
+        <option value="2">II</option>
+        <option value="3">III</option>
+        <option value="4">IV</option>
+      </select>
+
+      <select
+        name="section"
+        value={form.section}
+        onChange={handleChange}
+        className="rounded-xl border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-blue-500"
+      >
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+      </select>
 
       <button
         type="submit"
-        className="rounded-lg bg-blue-600 font-semibold text-white hover:bg-blue-500"
+        className="rounded-xl bg-blue-600 font-semibold text-white transition hover:bg-blue-500"
       >
-        {editingStudent ? "Update Student" : "Add Student"}
+        {editingStudent ? "Update" : "Add Student"}
       </button>
     </form>
   );
