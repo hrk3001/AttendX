@@ -7,9 +7,9 @@ import { getDashboardStats } from "../api/dashboardApi";
 function Dashboard() {
   const [stats, setStats] = useState({
     totalStudents: 0,
-    excellent: 0,
-    good: 0,
-    low: 0,
+    presentToday: 0,
+    absentToday: 0,
+    classesToday: 0,
     averageAttendance: 0,
   });
 
@@ -18,15 +18,39 @@ function Dashboard() {
   }, []);
 
   async function loadStats() {
-    const data = await getDashboardStats();
-    setStats(data);
+    try {
+      const data = await getDashboardStats();
+
+      setStats({
+        totalStudents: data.totalStudents || 0,
+        presentToday: data.presentToday || 0,
+        absentToday: data.absentToday || 0,
+        classesToday: data.classesToday || 0,
+        averageAttendance: data.averageAttendance || 0,
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
     <DashboardLayout>
-      <div className="grid grid-cols-5 gap-6">
+      {/* Heading */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-white">
+          Dashboard
+        </h1>
+
+        <p className="mt-2 text-slate-400">
+          Welcome back! Here's today's attendance overview.
+        </p>
+      </div>
+
+      {/* Statistics */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5">
+
         <StatCard
-          title="Attendance"
+          title="Overall Attendance"
           value={`${stats.averageAttendance}%`}
           color="text-green-400"
         />
@@ -38,26 +62,34 @@ function Dashboard() {
         />
 
         <StatCard
-          title="Excellent"
-          value={stats.excellent}
+          title="Present Today"
+          value={stats.presentToday}
           color="text-emerald-400"
         />
 
         <StatCard
-          title="Good"
-          value={stats.good}
-          color="text-yellow-400"
+          title="Absent Today"
+          value={stats.absentToday}
+          color="text-red-400"
         />
 
         <StatCard
-          title="Low"
-          value={stats.low}
-          color="text-red-400"
+          title="Classes Today"
+          value={stats.classesToday}
+          color="text-yellow-400"
         />
+
       </div>
 
-      <div className="mt-8">
+      {/* Attendance Graph */}
+      <div className="mt-10 rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
+
+        <h2 className="mb-6 text-3xl font-bold text-white">
+          Attendance Trend
+        </h2>
+
         <AttendanceChart />
+
       </div>
     </DashboardLayout>
   );

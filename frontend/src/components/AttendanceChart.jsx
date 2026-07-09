@@ -1,36 +1,32 @@
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
   XAxis,
+  YAxis,
   CartesianGrid,
   Tooltip,
 } from "recharts";
 
 const data = [
-  { day: "Mon", attendance: 82 },
-  { day: "Tue", attendance: 91 },
-  { day: "Wed", attendance: 88 },
-  { day: "Thu", attendance: 94 },
-  { day: "Fri", attendance: 96 },
-  { day: "Sat", attendance: 90 },
+  { day: "Mon", attendance: 0 },
+  { day: "Tue", attendance: 0 },
+  { day: "Wed", attendance: 0 },
+  { day: "Thu", attendance: 0 },
+  { day: "Fri", attendance: 0 },
+  { day: "Sat", attendance: 0 },
 ];
 
 function AttendanceChart() {
   return (
-    <div className="rounded-2xl bg-slate-900 p-6 shadow-lg">
+    <div className="rounded-3xl bg-slate-900 p-6 shadow-xl">
+
       <h2 className="mb-6 text-2xl font-bold text-white">
-        Attendance Analytics
+        Weekly Attendance Trend
       </h2>
 
-      <ResponsiveContainer width="100%" height={320}>
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="attendance" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-            </linearGradient>
-          </defs>
+      <ResponsiveContainer width="100%" height={350}>
+        <LineChart data={data}>
 
           <CartesianGrid stroke="#334155" strokeDasharray="4 4" />
 
@@ -39,17 +35,28 @@ function AttendanceChart() {
             stroke="#94a3b8"
           />
 
+          <YAxis
+            domain={[0, 100]}
+            stroke="#94a3b8"
+          />
+
           <Tooltip />
 
-          <Area
+          <Line
             type="monotone"
             dataKey="attendance"
             stroke="#3b82f6"
             strokeWidth={4}
-            fill="url(#attendance)"
+            dot={{ r: 5 }}
           />
-        </AreaChart>
+
+        </LineChart>
       </ResponsiveContainer>
+
+      <p className="mt-4 text-center text-slate-400">
+        Attendance data will appear after attendance records are created.
+      </p>
+
     </div>
   );
 }

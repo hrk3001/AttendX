@@ -7,15 +7,12 @@ export async function getDashboardStats() {
 
   return {
     totalStudents: students.length,
-    excellent: students.filter(s => s.status === "Excellent").length,
-    good: students.filter(s => s.status === "Good").length,
-    low: students.filter(s => s.status === "Low").length,
-    averageAttendance:
-      students.length === 0
-        ? 0
-        : Math.round(
-            students.reduce((sum, s) => sum + s.attendance, 0) /
-              students.length
-          ),
+
+    // Temporary values until Attendance module is built
+    presentToday: 0,
+    absentToday: 0,
+    classesToday: 0,
+
+    averageAttendance: 0,
   };
 }
