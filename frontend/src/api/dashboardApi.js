@@ -1,18 +1,8 @@
-import { getStudents } from "./studentApi";
+import axios from "axios";
+
+const API = "http://localhost:8080/dashboard";
 
 export async function getDashboardStats() {
-  const response = await getStudents();
-
-  const students = response.data;
-
-  return {
-    totalStudents: students.length,
-
-    // Temporary values until Attendance module is built
-    presentToday: 0,
-    absentToday: 0,
-    classesToday: 0,
-
-    averageAttendance: 0,
-  };
+  const response = await axios.get(API);
+  return response.data;
 }
