@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 
 function StudentForm({ addStudent, editingStudent }) {
   const [form, setForm] = useState({
-    rollNo: "",
     name: "",
     department: "CSE",
     year: "1",
@@ -12,7 +11,6 @@ function StudentForm({ addStudent, editingStudent }) {
   useEffect(() => {
     if (editingStudent) {
       setForm({
-        rollNo: editingStudent.rollNo || "",
         name: editingStudent.name || "",
         department: editingStudent.department || "CSE",
         year: editingStudent.year || "1",
@@ -20,7 +18,6 @@ function StudentForm({ addStudent, editingStudent }) {
       });
     } else {
       setForm({
-        rollNo: "",
         name: "",
         department: "CSE",
         year: "1",
@@ -40,7 +37,6 @@ function StudentForm({ addStudent, editingStudent }) {
     e.preventDefault();
 
     if (
-      !form.rollNo ||
       !form.name ||
       !form.department ||
       !form.year ||
@@ -51,7 +47,6 @@ function StudentForm({ addStudent, editingStudent }) {
     }
 
     addStudent({
-      rollNo: form.rollNo,
       name: form.name,
       department: form.department,
       year: Number(form.year),
@@ -60,7 +55,6 @@ function StudentForm({ addStudent, editingStudent }) {
 
     if (!editingStudent) {
       setForm({
-        rollNo: "",
         name: "",
         department: "CSE",
         year: "1",
@@ -72,16 +66,8 @@ function StudentForm({ addStudent, editingStudent }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-8 grid grid-cols-6 gap-4"
+      className="mb-8 grid grid-cols-5 gap-4"
     >
-      <input
-        name="rollNo"
-        value={form.rollNo}
-        onChange={handleChange}
-        placeholder="Roll No"
-        className="rounded-xl border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-blue-500"
-      />
-
       <input
         name="name"
         value={form.name}
@@ -111,10 +97,10 @@ function StudentForm({ addStudent, editingStudent }) {
         onChange={handleChange}
         className="rounded-xl border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-blue-500"
       >
-        <option value="1">I</option>
-        <option value="2">II</option>
-        <option value="3">III</option>
-        <option value="4">IV</option>
+        <option value="1">I Year</option>
+        <option value="2">II Year</option>
+        <option value="3">III Year</option>
+        <option value="4">IV Year</option>
       </select>
 
       <select
@@ -133,7 +119,7 @@ function StudentForm({ addStudent, editingStudent }) {
         type="submit"
         className="rounded-xl bg-blue-600 font-semibold text-white transition hover:bg-blue-500"
       >
-        {editingStudent ? "Update" : "Add Student"}
+        {editingStudent ? "Update Student" : "Add Student"}
       </button>
     </form>
   );
