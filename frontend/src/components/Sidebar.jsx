@@ -6,6 +6,7 @@ import {
   Settings,
   History,
   LogOut,
+  GraduationCap,
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
@@ -30,6 +31,11 @@ const menuItems = [
     icon: Users,
     label: "Students",
     path: "/students",
+  },
+  {
+    icon: GraduationCap,
+    label: "Teachers",
+    path: "/teachers",
   },
   {
     icon: FileText,

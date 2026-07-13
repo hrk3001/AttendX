@@ -1,9 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
+import TeacherLogin from "./pages/TeacherLogin";
+
 import Dashboard from "./pages/Dashboard";
 import Attendance from "./pages/Attendance";
 import Students from "./pages/Students";
+import Teachers from "./pages/Teachers";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import AttendanceHistory from "./pages/AttendanceHistory";
@@ -15,10 +18,16 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public Route */}
+        {/* Public Routes */}
         <Route path="/" element={<LoginPage />} />
 
+        <Route
+          path="/teacher-login"
+          element={<TeacherLogin />}
+        />
+
         {/* Protected Routes */}
+
         <Route
           path="/dashboard"
           element={
@@ -47,6 +56,24 @@ function App() {
         />
 
         <Route
+          path="/teachers"
+          element={
+            <ProtectedRoute>
+              <Teachers />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/attendance-history"
+          element={
+            <ProtectedRoute>
+              <AttendanceHistory />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/reports"
           element={
             <ProtectedRoute>
@@ -60,15 +87,6 @@ function App() {
           element={
             <ProtectedRoute>
               <Settings />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/attendance-history"
-          element={
-            <ProtectedRoute>
-              <AttendanceHistory />
             </ProtectedRoute>
           }
         />
