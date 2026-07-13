@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import TeacherDashboard from "./pages/TeacherDashboard";
+import TeacherProtectedRoute from "./components/TeacherProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import TeacherLogin from "./pages/TeacherLogin";
 
@@ -90,6 +91,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/teacher-dashboard"
+  element={
+    <TeacherProtectedRoute>
+      <TeacherDashboard />
+    </TeacherProtectedRoute>
+  }
+/>
 
       </Routes>
     </BrowserRouter>

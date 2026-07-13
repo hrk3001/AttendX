@@ -1,8 +1,14 @@
 import axios from "axios";
 
-const API = "http://localhost:8080";
+const STUDENT_API = "http://localhost:8080/students";
+const ATTENDANCE_API = "http://localhost:8080/attendance";
 
-export const getStudents = () => axios.get(`${API}/students`);
+export async function getStudents() {
+  const response = await axios.get(STUDENT_API);
+  return response.data;
+}
 
-export const getAttendanceByDate = (date) =>
-  axios.get(`${API}/attendance/${date}`);
+export async function getAttendanceByDate(date) {
+  const response = await axios.get(`${ATTENDANCE_API}/${date}`);
+  return response.data;
+}

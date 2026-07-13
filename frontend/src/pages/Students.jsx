@@ -22,10 +22,11 @@ function Students() {
 
   async function loadStudents() {
     try {
-      const response = await getStudents();
-      setStudents(response.data);
+      const data = await getStudents();
+      setStudents(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error(error);
+      setStudents([]);
     }
   }
 
@@ -54,23 +55,37 @@ function Students() {
   }
 
   const departments = useMemo(() => {
+    if (!Array.isArray(students)) {
+      return ["All"];
+    }
+
     return [
       "All",
-      ...new Set(students.map((student) => student.department)),
+      ...new Set(
+        students
+          .filter((student) => student?.department)
+          .map((student) => student.department)
+      ),
     ];
   }, [students]);
 
-  const filteredStudents = students.filter((student) => {
-    const matchesSearch =
-      student.name.toLowerCase().includes(search.toLowerCase()) ||
-      student.department.toLowerCase().includes(search.toLowerCase());
+  const filteredStudents = Array.isArray(students)
+    ? students.filter((student) => {
+        const matchesSearch =
+          student.name
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
+          student.department
+            .toLowerCase()
+            .includes(search.toLowerCase());
 
-    const matchesDepartment =
-      department === "All" ||
-      student.department === department;
+        const matchesDepartment =
+          department === "All" ||
+          student.department === department;
 
-    return matchesSearch && matchesDepartment;
-  });
+        return matchesSearch && matchesDepartment;
+      })
+    : [];
 
   return (
     <DashboardLayout>

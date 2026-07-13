@@ -23,8 +23,12 @@ function TeacherLogin() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    try {
+    if (!form.email || !form.password) {
+      alert("Please enter Email and Password");
+      return;
+    }
 
+    try {
       setLoading(true);
 
       const teacher = await teacherLogin(
@@ -32,6 +36,8 @@ function TeacherLogin() {
         form.password
       );
 
+      // Save teacher session
+      localStorage.setItem("teacherLoggedIn", "true");
       localStorage.setItem(
         "teacher",
         JSON.stringify(teacher)
@@ -40,18 +46,14 @@ function TeacherLogin() {
       navigate("/teacher-dashboard");
 
     } catch (err) {
-
+      console.error(err);
       alert("Invalid Email or Password");
-
     } finally {
-
       setLoading(false);
-
     }
   }
 
   return (
-
     <div className="flex min-h-screen items-center justify-center bg-slate-950">
 
       <form
@@ -82,8 +84,9 @@ function TeacherLogin() {
         />
 
         <button
+          type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-blue-600 p-3 font-semibold text-white transition hover:bg-blue-500"
+          className="w-full rounded-xl bg-blue-600 p-3 font-semibold text-white transition hover:bg-blue-500 disabled:opacity-60"
         >
           {loading ? "Logging in..." : "Login"}
         </button>

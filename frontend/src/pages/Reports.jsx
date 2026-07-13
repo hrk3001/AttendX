@@ -12,13 +12,14 @@ function Reports() {
     loadReport();
   }, []);
 
+
   async function loadReport() {
     try {
-      const studentsRes = await getStudents();
-      const attendanceRes = await getAttendanceByDate(today);
+     const studentsData = await getStudents();
+const attendanceData = await getAttendanceByDate(today);
 
-      setStudents(studentsRes.data);
-      setAttendance(attendanceRes.data);
+setStudents(studentsData);
+setAttendance(attendanceData);
     } catch (err) {
       console.error(err);
     }

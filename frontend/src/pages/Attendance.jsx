@@ -9,23 +9,24 @@ import {
 function Attendance() {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
+  const [hour, setHour] = useState(1);
 
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [hour]);
 
   async function loadData() {
     try {
       const studentsResponse = await getStudents();
-      const attendanceResponse = await getAttendance(today);
+      const attendanceResponse = await getAttendance(today, hour);
 
-      setStudents(studentsResponse.data);
+      setStudents(studentsResponse);
 
       const attendanceMap = {};
 
-      attendanceResponse.data.forEach((record) => {
+      attendanceResponse.forEach((record) => {
         attendanceMap[record.studentId] = record.present;
       });
 
@@ -49,6 +50,7 @@ function Attendance() {
           studentId: student.id,
           studentName: student.name,
           date: today,
+          hour: hour,
           present: attendance[student.id] ?? false,
         });
       }
@@ -71,6 +73,25 @@ function Attendance() {
         <p className="mt-2 text-slate-400">
           Mark today's attendance.
         </p>
+
+        <div className="mt-6">
+          <label className="mr-3 font-semibold text-white">
+            Select Hour:
+          </label>
+
+          <select
+            value={hour}
+            onChange={(e) => setHour(Number(e.target.value))}
+            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-white"
+          >
+            <option value={1}>Hour 1</option>
+            <option value={2}>Hour 2</option>
+            <option value={3}>Hour 3</option>
+            <option value={4}>Hour 4</option>
+            <option value={5}>Hour 5</option>
+            <option value={6}>Hour 6</option>
+          </select>
+        </div>
       </div>
 
       <div className="rounded-2xl bg-slate-900 p-6 shadow-lg">
@@ -112,7 +133,7 @@ function Attendance() {
 
         <button
           onClick={handleSave}
-          className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-500"
+          className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-500"
         >
           Save Attendance
         </button>

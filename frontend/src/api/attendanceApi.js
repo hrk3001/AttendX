@@ -2,11 +2,17 @@ import axios from "axios";
 
 const API = "http://localhost:8080/attendance";
 
-export const saveAttendance = (attendance) =>
-  axios.post(API, attendance);
+export async function saveAttendance(attendance) {
+  const response = await axios.post(API, attendance);
+  return response.data;
+}
 
-export const getAttendance = (date) =>
-  axios.get(`${API}/${date}`);
+export async function getAttendance(date, hour) {
+  const response = await axios.get(`${API}/${date}/${hour}`);
+  return response.data;
+}
 
-export const getAttendanceByDate = (date) =>
-  axios.get(`${API}/${date}`);
+export async function getAttendanceByDate(date) {
+  const response = await axios.get(`${API}/${date}`);
+  return response.data;
+}
