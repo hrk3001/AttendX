@@ -8,7 +8,13 @@ export async function getStudents() {
   return response.data;
 }
 
-export async function getAttendanceByDate(date) {
-  const response = await axios.get(`${ATTENDANCE_API}/${date}`);
+export async function getAttendance(date, hour) {
+  const response = await axios.get(ATTENDANCE_API, {
+    params: {
+      date,
+      hour,
+    },
+  });
+
   return response.data;
 }

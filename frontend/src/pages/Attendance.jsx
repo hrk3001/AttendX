@@ -9,30 +9,45 @@ import {
 function Attendance() {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
+
+  const [date, setDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+
   const [hour, setHour] = useState(1);
 
-  const today = new Date().toISOString().split("T")[0];
+  useEffect(() => {
+    loadStudents();
+  }, []);
 
   useEffect(() => {
-    loadData();
-  }, [hour]);
+    loadAttendance();
+  }, [date, hour]);
 
-  async function loadData() {
+  async function loadStudents() {
     try {
-      const studentsResponse = await getStudents();
-      const attendanceResponse = await getAttendance(today, hour);
+      const studentsData = await getStudents();
+      setStudents(studentsData);
+    } catch (err) {
+      console.error(err);
+      setStudents([]);
+    }
+  }
 
-      setStudents(studentsResponse);
+  async function loadAttendance() {
+    try {
+      const records = await getAttendance(date, hour);
 
       const attendanceMap = {};
 
-      attendanceResponse.forEach((record) => {
+      records.forEach((record) => {
         attendanceMap[record.studentId] = record.present;
       });
 
       setAttendance(attendanceMap);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setAttendance({});
     }
   }
 
@@ -49,67 +64,87 @@ function Attendance() {
         await saveAttendance({
           studentId: student.id,
           studentName: student.name,
-          date: today,
+          date: date,
           hour: hour,
           present: attendance[student.id] ?? false,
         });
       }
 
-      alert("Attendance saved successfully!");
-      loadData();
-    } catch (error) {
-      console.error(error);
+      alert("Attendance Saved Successfully!");
+
+      loadAttendance();
+
+    } catch (err) {
+      console.error(err);
       alert("Failed to save attendance.");
     }
   }
 
   return (
     <DashboardLayout>
+
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-white">
           Attendance
         </h1>
 
         <p className="mt-2 text-slate-400">
-          Mark today's attendance.
+          Mark attendance for each hour.
         </p>
-
-        <div className="mt-6">
-          <label className="mr-3 font-semibold text-white">
-            Select Hour:
-          </label>
-
-          <select
-            value={hour}
-            onChange={(e) => setHour(Number(e.target.value))}
-            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-white"
-          >
-            <option value={1}>Hour 1</option>
-            <option value={2}>Hour 2</option>
-            <option value={3}>Hour 3</option>
-            <option value={4}>Hour 4</option>
-            <option value={5}>Hour 5</option>
-            <option value={6}>Hour 6</option>
-          </select>
-        </div>
       </div>
 
-      <div className="rounded-2xl bg-slate-900 p-6 shadow-lg">
+      <div className="mb-6 flex gap-4">
+
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="rounded-xl bg-slate-900 p-3 text-white"
+        />
+
+        <select
+          value={hour}
+          onChange={(e) => setHour(Number(e.target.value))}
+          className="rounded-xl bg-slate-900 p-3 text-white"
+        >
+          {[1,2,3,4,5,6,7,8].map((h)=>(
+            <option key={h} value={h}>
+              Hour {h}
+            </option>
+          ))}
+        </select>
+
+      </div>
+
+      <div className="rounded-2xl bg-slate-900 p-6">
+
         <table className="w-full">
+
           <thead>
-            <tr className="border-b border-slate-700 text-slate-300">
-              <th className="p-4 text-left">Name</th>
-              <th className="p-4 text-left">Department</th>
-              <th className="p-4 text-center">Present</th>
+            <tr className="border-b border-slate-700">
+              <th className="p-4 text-left text-white">
+                Name
+              </th>
+
+              <th className="p-4 text-left text-white">
+                Department
+              </th>
+
+              <th className="p-4 text-center text-white">
+                Present
+              </th>
             </tr>
           </thead>
 
           <tbody>
+
             {students.map((student) => (
+
               <tr
                 key={student.id}
                 className="border-b border-slate-800"
               >
+
                 <td className="p-4 text-white">
                   {student.name}
                 </td>
@@ -119,25 +154,33 @@ function Attendance() {
                 </td>
 
                 <td className="p-4 text-center">
+
                   <input
                     type="checkbox"
                     checked={attendance[student.id] ?? false}
                     onChange={() => toggleAttendance(student.id)}
                     className="h-5 w-5"
                   />
+
                 </td>
+
               </tr>
+
             ))}
+
           </tbody>
+
         </table>
 
         <button
           onClick={handleSave}
-          className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-500"
+          className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-500"
         >
           Save Attendance
         </button>
+
       </div>
+
     </DashboardLayout>
   );
 }

@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
-import { getStudents, getAttendanceByDate } from "../api/reportApi";
+import { getStudents, getAttendance } from "../api/reportApi";
 
 function Reports() {
-  const today = new Date().toISOString().split("T")[0];
+const [date, setDate] = useState(
+  new Date().toISOString().split("T")[0]
+);
+
+const [hour, setHour] = useState(1);
 
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
 
   useEffect(() => {
-    loadReport();
-  }, []);
-
+  loadReport();
+}, [date, hour]);
 
   async function loadReport() {
     try {
      const studentsData = await getStudents();
-const attendanceData = await getAttendanceByDate(today);
+const attendanceData = await getAttendance(date, hour);
 
 setStudents(studentsData);
 setAttendance(attendanceData);
@@ -35,12 +38,36 @@ setAttendance(attendanceData);
       : ((present / totalStudents) * 100).toFixed(1);
 
   return (
-    <DashboardLayout>
-      <h1 className="mb-8 text-4xl font-bold text-white">
-        Reports
-      </h1>
+  <DashboardLayout>
 
-      <div className="grid grid-cols-4 gap-6">
+    <h1 className="mb-8 text-4xl font-bold text-white">
+      Reports
+    </h1>
+
+    <div className="mb-6 flex gap-4">
+
+      <input
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className="rounded-xl bg-slate-900 p-3 text-white"
+      />
+
+      <select
+        value={hour}
+        onChange={(e) => setHour(Number(e.target.value))}
+        className="rounded-xl bg-slate-900 p-3 text-white"
+      >
+        {[1,2,3,4,5,6,7,8].map((h) => (
+          <option key={h} value={h}>
+            Hour {h}
+          </option>
+        ))}
+      </select>
+
+    </div>
+
+    <div className="grid grid-cols-4 gap-6">
         <div className="rounded-xl bg-slate-900 p-6">
           <p className="text-slate-400">Students</p>
           <h2 className="mt-2 text-4xl font-bold text-white">
