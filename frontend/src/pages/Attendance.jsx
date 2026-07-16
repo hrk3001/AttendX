@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
-import { getStudents } from "../api/studentApi";
+
+import {
+  getStudents,
+  getStudentsByClass,
+} from "../api/studentApi";
+
 import {
   saveAttendance,
   getAttendance,
 } from "../api/attendanceApi";
+
+import { getTeacher } from "../utils/getTeacher";
 
 function Attendance() {
   const [students, setStudents] = useState([]);
@@ -16,6 +23,11 @@ function Attendance() {
 
   const [hour, setHour] = useState(1);
 
+  const isTeacher =
+    localStorage.getItem("teacherLoggedIn") === "true";
+
+  const teacher = isTeacher ? getTeacher() : null;
+
   useEffect(() => {
     loadStudents();
   }, []);
@@ -26,8 +38,18 @@ function Attendance() {
 
   async function loadStudents() {
     try {
-      const studentsData = await getStudents();
-      setStudents(studentsData);
+      if (isTeacher) {
+        const studentsData = await getStudentsByClass(
+          teacher.department,
+          teacher.batch,
+          teacher.section
+        );
+
+        setStudents(studentsData);
+      } else {
+        const studentsData = await getStudents();
+        setStudents(studentsData);
+      }
     } catch (err) {
       console.error(err);
       setStudents([]);
@@ -64,16 +86,14 @@ function Attendance() {
         await saveAttendance({
           studentId: student.id,
           studentName: student.name,
-          date: date,
-          hour: hour,
+          date,
+          hour,
           present: attendance[student.id] ?? false,
         });
       }
 
       alert("Attendance Saved Successfully!");
-
       loadAttendance();
-
     } catch (err) {
       console.error(err);
       alert("Failed to save attendance.");
@@ -84,6 +104,7 @@ function Attendance() {
     <DashboardLayout>
 
       <div className="mb-8">
+
         <h1 className="text-4xl font-bold text-white">
           Attendance
         </h1>
@@ -91,6 +112,39 @@ function Attendance() {
         <p className="mt-2 text-slate-400">
           Mark attendance for each hour.
         </p>
+
+        {isTeacher && (
+          <div className="mt-4 rounded-xl bg-slate-900 p-4 text-slate-300">
+            <p>
+              <span className="font-semibold text-white">
+                Department:
+              </span>{" "}
+              {teacher.department}
+            </p>
+
+            <p>
+              <span className="font-semibold text-white">
+                Batch:
+              </span>{" "}
+              {teacher.batch}
+            </p>
+
+            <p>
+              <span className="font-semibold text-white">
+                Section:
+              </span>{" "}
+              {teacher.section}
+            </p>
+
+            <p>
+              <span className="font-semibold text-white">
+                Subject:
+              </span>{" "}
+              {teacher.subject}
+            </p>
+          </div>
+        )}
+
       </div>
 
       <div className="mb-6 flex gap-4">
@@ -121,7 +175,13 @@ function Attendance() {
         <table className="w-full">
 
           <thead>
+
             <tr className="border-b border-slate-700">
+
+              <th className="p-4 text-left text-white">
+                Roll No
+              </th>
+
               <th className="p-4 text-left text-white">
                 Name
               </th>
@@ -130,10 +190,16 @@ function Attendance() {
                 Department
               </th>
 
+              <th className="p-4 text-left text-white">
+                Section
+              </th>
+
               <th className="p-4 text-center text-white">
                 Present
               </th>
+
             </tr>
+
           </thead>
 
           <tbody>
@@ -145,6 +211,10 @@ function Attendance() {
                 className="border-b border-slate-800"
               >
 
+                <td className="p-4 text-slate-300">
+                  {student.rollNo}
+                </td>
+
                 <td className="p-4 text-white">
                   {student.name}
                 </td>
@@ -153,12 +223,18 @@ function Attendance() {
                   {student.department}
                 </td>
 
+                <td className="p-4 text-slate-300">
+                  {student.section}
+                </td>
+
                 <td className="p-4 text-center">
 
                   <input
                     type="checkbox"
                     checked={attendance[student.id] ?? false}
-                    onChange={() => toggleAttendance(student.id)}
+                    onChange={() =>
+                      toggleAttendance(student.id)
+                    }
                     className="h-5 w-5"
                   />
 

@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import StudentForm from "../components/StudentForm";
 import StudentTable from "../components/StudentTable";
+import { getTeacher } from "../utils/getTeacher";
 
 import {
   getStudents,
+  getStudentsByClass,
   addStudent,
-  deleteStudent,
   updateStudent,
+  deleteStudent,
 } from "../api/studentApi";
 
 function Students() {
@@ -16,17 +18,31 @@ function Students() {
   const [department, setDepartment] = useState("All");
   const [editingStudent, setEditingStudent] = useState(null);
 
+  const isTeacher =
+    localStorage.getItem("teacherLoggedIn") === "true";
+
   useEffect(() => {
     loadStudents();
   }, []);
 
   async function loadStudents() {
     try {
-      const data = await getStudents();
-      setStudents(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error(error);
-      setStudents([]);
+      if (isTeacher) {
+        const teacher = getTeacher();
+
+        const data = await getStudentsByClass(
+          teacher.department,
+          teacher.batch,
+          teacher.section
+        );
+
+        setStudents(data);
+      } else {
+        const data = await getStudents();
+        setStudents(data);
+      }
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -40,8 +56,8 @@ function Students() {
       }
 
       loadStudents();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -49,47 +65,41 @@ function Students() {
     try {
       await deleteStudent(id);
       loadStudents();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   }
 
   const departments = useMemo(() => {
-    if (!Array.isArray(students)) {
+    if (isTeacher) {
       return ["All"];
     }
 
     return [
       "All",
-      ...new Set(
-        students
-          .filter((student) => student?.department)
-          .map((student) => student.department)
-      ),
+      ...new Set(students.map((student) => student.department)),
     ];
-  }, [students]);
+  }, [students, isTeacher]);
 
-  const filteredStudents = Array.isArray(students)
-    ? students.filter((student) => {
-        const matchesSearch =
-          student.name
-            .toLowerCase()
-            .includes(search.toLowerCase()) ||
-          student.department
-            .toLowerCase()
-            .includes(search.toLowerCase());
+  const filteredStudents = students.filter((student) => {
+    const matchesSearch =
+      student.name
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      student.department
+        .toLowerCase()
+        .includes(search.toLowerCase());
 
-        const matchesDepartment =
-          department === "All" ||
-          student.department === department;
+    const matchesDepartment =
+      isTeacher ||
+      department === "All" ||
+      student.department === department;
 
-        return matchesSearch && matchesDepartment;
-      })
-    : [];
+    return matchesSearch && matchesDepartment;
+  });
 
   return (
     <DashboardLayout>
-      {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-white">
@@ -112,43 +122,42 @@ function Students() {
         </div>
       </div>
 
-      {/* Search + Filter */}
       <div className="mb-6 grid grid-cols-4 gap-4">
         <input
           type="text"
           placeholder="🔍 Search by name or department..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="col-span-3 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-white outline-none transition focus:border-blue-500"
+          className="col-span-3 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-white outline-none focus:border-blue-500"
         />
 
-        <select
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-          className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-white outline-none focus:border-blue-500"
-        >
-          {departments.map((dept) => (
-            <option
-              key={dept}
-              value={dept}
-            >
-              {dept}
-            </option>
-          ))}
-        </select>
+        {!isTeacher && (
+          <select
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+            className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-white outline-none focus:border-blue-500"
+          >
+            {departments.map((dept) => (
+              <option key={dept} value={dept}>
+                {dept}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
-      {/* Form */}
-      <StudentForm
-        addStudent={handleSaveStudent}
-        editingStudent={editingStudent}
-      />
+      {!isTeacher && (
+        <StudentForm
+          addStudent={handleSaveStudent}
+          editingStudent={editingStudent}
+        />
+      )}
 
-      {/* Table */}
       <StudentTable
         students={filteredStudents}
         deleteStudent={handleDeleteStudent}
         setEditingStudent={setEditingStudent}
+        isTeacher={isTeacher}
       />
     </DashboardLayout>
   );

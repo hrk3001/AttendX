@@ -4,6 +4,7 @@ function StudentTable({
   students,
   deleteStudent,
   setEditingStudent,
+  isTeacher,
 }) {
   function getCurrentYear(batch) {
     const year = new Date().getFullYear() - batch + 1;
@@ -34,7 +35,12 @@ function StudentTable({
             <th className="px-6 py-4 text-left">Batch</th>
             <th className="px-6 py-4 text-left">Current Year</th>
             <th className="px-6 py-4 text-left">Section</th>
-            <th className="px-6 py-4 text-center">Actions</th>
+
+            {!isTeacher && (
+              <th className="px-6 py-4 text-center">
+                Actions
+              </th>
+            )}
           </tr>
         </thead>
 
@@ -42,7 +48,7 @@ function StudentTable({
           {students.length === 0 ? (
             <tr>
               <td
-                colSpan="8"
+                colSpan={isTeacher ? 7 : 8}
                 className="py-12 text-center text-slate-400"
               >
                 No students found.
@@ -82,31 +88,35 @@ function StudentTable({
                   {student.section}
                 </td>
 
-                <td className="px-6 py-4">
-                  <div className="flex justify-center gap-2">
-                    <button
-                      onClick={() => setEditingStudent(student)}
-                      className="rounded-lg bg-yellow-500 p-2 text-white transition hover:bg-yellow-400"
-                    >
-                      <Pencil size={18} />
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            `Delete ${student.name}?`
-                          )
-                        ) {
-                          deleteStudent(student.id);
+                {!isTeacher && (
+                  <td className="px-6 py-4">
+                    <div className="flex justify-center gap-2">
+                      <button
+                        onClick={() =>
+                          setEditingStudent(student)
                         }
-                      }}
-                      className="rounded-lg bg-red-600 p-2 text-white transition hover:bg-red-500"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
+                        className="rounded-lg bg-yellow-500 p-2 text-white hover:bg-yellow-400"
+                      >
+                        <Pencil size={18} />
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              `Delete ${student.name}?`
+                            )
+                          ) {
+                            deleteStudent(student.id);
+                          }
+                        }}
+                        className="rounded-lg bg-red-600 p-2 text-white hover:bg-red-500"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                )}
               </tr>
             ))
           )}
