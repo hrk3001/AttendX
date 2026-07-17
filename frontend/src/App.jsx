@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TeacherDashboard from "./pages/TeacherDashboard";
-import TeacherProtectedRoute from "./components/TeacherProtectedRoute";
+
 import LoginPage from "./pages/LoginPage";
 import TeacherLogin from "./pages/TeacherLogin";
 
 import Dashboard from "./pages/Dashboard";
+import TeacherDashboard from "./pages/TeacherDashboard";
+
 import Attendance from "./pages/Attendance";
 import Students from "./pages/Students";
 import Teachers from "./pages/Teachers";
@@ -13,21 +14,18 @@ import Settings from "./pages/Settings";
 import AttendanceHistory from "./pages/AttendanceHistory";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import TeacherProtectedRoute from "./components/TeacherProtectedRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* Public Routes */}
+        {/* Public */}
         <Route path="/" element={<LoginPage />} />
+        <Route path="/teacher-login" element={<TeacherLogin />} />
 
-        <Route
-          path="/teacher-login"
-          element={<TeacherLogin />}
-        />
-
-        {/* Protected Routes */}
+        {/* ADMIN */}
 
         <Route
           path="/dashboard"
@@ -39,37 +37,10 @@ function App() {
         />
 
         <Route
-          path="/attendance"
-          element={
-            <ProtectedRoute>
-              <Attendance />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/students"
-          element={
-            <ProtectedRoute>
-              <Students />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
           path="/teachers"
           element={
             <ProtectedRoute>
               <Teachers />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/attendance-history"
-          element={
-            <ProtectedRoute>
-              <AttendanceHistory />
             </ProtectedRoute>
           }
         />
@@ -91,14 +62,44 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* TEACHER */}
+
         <Route
-  path="/teacher-dashboard"
-  element={
-    <TeacherProtectedRoute>
-      <TeacherDashboard />
-    </TeacherProtectedRoute>
-  }
-/>
+          path="/teacher-dashboard"
+          element={
+            <TeacherProtectedRoute>
+              <TeacherDashboard />
+            </TeacherProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/attendance"
+          element={
+            <TeacherProtectedRoute>
+              <Attendance />
+            </TeacherProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/students"
+          element={
+            <TeacherProtectedRoute>
+              <Students />
+            </TeacherProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/attendance-history"
+          element={
+            <TeacherProtectedRoute>
+              <AttendanceHistory />
+            </TeacherProtectedRoute>
+          }
+        />
 
       </Routes>
     </BrowserRouter>

@@ -1,10 +1,11 @@
 import { Navigate } from "react-router-dom";
 
 function TeacherProtectedRoute({ children }) {
-  const loggedIn = localStorage.getItem("teacherLoggedIn");
+  const teacherLoggedIn =
+    localStorage.getItem("teacherLoggedIn") === "true";
 
-  if (!loggedIn) {
-    return <Navigate to="/teacher-login" replace />;
+  if (!teacherLoggedIn) {
+    return <Navigate to="/" replace />;
   }
 
   return children;
