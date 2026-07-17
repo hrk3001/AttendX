@@ -5,7 +5,7 @@ import TeacherLogin from "./pages/TeacherLogin";
 
 import Dashboard from "./pages/Dashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
-
+import AuthRoute from "./components/AuthRoute";
 import Attendance from "./pages/Attendance";
 import Students from "./pages/Students";
 import Teachers from "./pages/Teachers";
