@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import TeacherLogin from "./pages/TeacherLogin";
-
+import StudentReports from "./pages/StudentReports";
 import Dashboard from "./pages/Dashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AuthRoute from "./components/AuthRoute";
@@ -98,6 +98,14 @@ function App() {
     <AuthRoute>
       <AttendanceHistory />
     </AuthRoute>
+  }
+/>
+<Route
+  path="/student-reports"
+  element={
+    <ProtectedRoute>
+      <StudentReports />
+    </ProtectedRoute>
   }
 />
 

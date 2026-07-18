@@ -76,8 +76,13 @@ function Sidebar() {
         },
         {
           icon: FileText,
-          label: "Reports",
+          label: "Daily Reports",
           path: "/reports",
+        },
+        {
+          icon: FileText,
+          label: "Student Reports",
+          path: "/student-reports",
         },
         {
           icon: Settings,
@@ -137,7 +142,7 @@ function Sidebar() {
 
         <div className="mb-5 flex items-center gap-3">
 
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white font-bold">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 font-bold text-white">
             {user?.name
               ? user.name.charAt(0).toUpperCase()
               : "A"}

@@ -18,3 +18,7 @@ export async function getAttendance(date, hour) {
 
   return response.data;
 }
+export async function getAttendanceReport() {
+  const response = await axios.get("http://localhost:8080/reports");
+  return response.data;
+}
