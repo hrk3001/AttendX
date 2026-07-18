@@ -75,31 +75,31 @@ function App() {
         />
 
         <Route
-          path="/attendance"
-          element={
-            <TeacherProtectedRoute>
-              <Attendance />
-            </TeacherProtectedRoute>
-          }
-        />
+  path="/attendance"
+  element={
+    <AuthRoute>
+      <Attendance />
+    </AuthRoute>
+  }
+/>
 
-        <Route
-          path="/students"
-          element={
-            <TeacherProtectedRoute>
-              <Students />
-            </TeacherProtectedRoute>
-          }
-        />
+<Route
+  path="/students"
+  element={
+    <AuthRoute>
+      <Students />
+    </AuthRoute>
+  }
+/>
 
-        <Route
-          path="/attendance-history"
-          element={
-            <TeacherProtectedRoute>
-              <AttendanceHistory />
-            </TeacherProtectedRoute>
-          }
-        />
+<Route
+  path="/attendance-history"
+  element={
+    <AuthRoute>
+      <AttendanceHistory />
+    </AuthRoute>
+  }
+/>
 
       </Routes>
     </BrowserRouter>
