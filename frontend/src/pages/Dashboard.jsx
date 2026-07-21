@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { CalendarDays } from "lucide-react";
+
+import DashboardLayout from "../layouts/DashboardLayout";
+import StatCard from "../components/StatCard";
+import AttendanceChart from "../components/AttendanceChart";
+import QuickActions from "../components/QuickActions";
+import RecentActivity from "../components/RecentActivity";
+import AttendanceHealth from "../components/AttendanceHealth";
+
 import {
-  CalendarDays,
-  Plus,
-  ClipboardCheck,
-  FileText,
   Users,
   UserCheck,
   UserX,
@@ -12,9 +16,6 @@ import {
   Activity,
 } from "lucide-react";
 
-import AttendanceChart from "../components/AttendanceChart";
-import DashboardLayout from "../layouts/DashboardLayout";
-import StatCard from "../components/StatCard";
 import { getDashboardStats } from "../api/dashboardApi";
 
 function Dashboard() {
@@ -43,30 +44,18 @@ function Dashboard() {
         averageAttendance: data.averageAttendance || 0,
         weeklyTrend: data.weeklyTrend || [],
       });
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   }
 
-  const teacher = JSON.parse(
-    localStorage.getItem("teacher") || "{}"
-  );
-
-  const admin = JSON.parse(
-    localStorage.getItem("admin") || "{}"
-  );
+  const teacher = JSON.parse(localStorage.getItem("teacher") || "{}");
+  const admin = JSON.parse(localStorage.getItem("admin") || "{}");
 
   const user =
     localStorage.getItem("teacherLoggedIn") === "true"
       ? teacher
       : admin;
-
-  const today = new Date().toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
 
   const hour = new Date().getHours();
 
@@ -75,29 +64,37 @@ function Dashboard() {
   if (hour < 12) greeting = "Good Morning";
   else if (hour < 17) greeting = "Good Afternoon";
 
+  const today = new Date().toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <DashboardLayout>
-      {/* Greeting */}
 
-      <div className="mb-10 flex items-center justify-between">
+      {/* Header */}
+
+      <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
         <div>
 
           <h1 className="text-5xl font-extrabold text-white">
             {greeting},{" "}
-            <span className="text-blue-400">
+            <span className="text-cyan-400">
               {user?.name || "Administrator"}
-            </span>{" "}
+            </span>
             👋
           </h1>
 
-          <p className="mt-3 flex items-center gap-2 text-slate-400">
+          <p className="mt-4 flex items-center gap-2 text-slate-400">
             <CalendarDays size={18} />
             {today}
           </p>
 
           <p className="mt-2 text-slate-500">
-            Welcome back! Here's today's attendance overview.
+            Welcome back to AttendX Dashboard.
           </p>
 
         </div>
@@ -106,49 +103,18 @@ function Dashboard() {
 
       {/* Quick Actions */}
 
-      <div className="mb-10 flex flex-wrap gap-4">
-
-        <Link
-          to="/students"
-          className="rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:scale-105 hover:bg-blue-500"
-        >
-          <div className="flex items-center gap-2">
-            <Plus size={18} />
-            Add Student
-          </div>
-        </Link>
-
-        <Link
-          to="/attendance"
-          className="rounded-2xl bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:scale-105 hover:bg-emerald-500"
-        >
-          <div className="flex items-center gap-2">
-            <ClipboardCheck size={18} />
-            Mark Attendance
-          </div>
-        </Link>
-
-        <Link
-          to="/reports"
-          className="rounded-2xl bg-purple-600 px-6 py-3 font-semibold text-white transition hover:scale-105 hover:bg-purple-500"
-        >
-          <div className="flex items-center gap-2">
-            <FileText size={18} />
-            Reports
-          </div>
-        </Link>
-
-      </div>
+      <QuickActions />
 
       {/* Stats */}
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5">
+      <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
 
         <StatCard
-          title="Overall Attendance"
+          title="Attendance"
           value={`${stats.averageAttendance}%`}
           color="text-green-400"
           icon={Activity}
+          subtitle="Overall performance"
         />
 
         <StatCard
@@ -156,35 +122,57 @@ function Dashboard() {
           value={stats.totalStudents}
           color="text-blue-400"
           icon={Users}
+          subtitle="Registered students"
         />
 
         <StatCard
-          title="Present Today"
+          title="Present"
           value={stats.presentToday}
           color="text-emerald-400"
           icon={UserCheck}
+          subtitle="Today's attendance"
         />
 
         <StatCard
-          title="Absent Today"
+          title="Absent"
           value={stats.absentToday}
           color="text-red-400"
           icon={UserX}
+          subtitle="Need follow-up"
         />
 
         <StatCard
-          title="Classes Today"
+          title="Classes"
           value={stats.classesToday}
           color="text-yellow-400"
           icon={BookOpen}
+          subtitle="Scheduled today"
         />
 
       </div>
 
-      {/* Chart */}
+      {/* Analytics */}
+
+      <div className="mt-10 grid gap-8 xl:grid-cols-3">
+
+        <div className="xl:col-span-2">
+          <AttendanceChart
+            data={stats.weeklyTrend}
+          />
+        </div>
+
+        <AttendanceHealth
+          attendance={stats.averageAttendance}
+        />
+
+      </div>
+
+      {/* Recent Activity */}
 
       <div className="mt-10">
-        <AttendanceChart data={stats.weeklyTrend} />
+
+        <RecentActivity />
+
       </div>
 
     </DashboardLayout>
