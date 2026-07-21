@@ -2,15 +2,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import TeacherLogin from "./pages/TeacherLogin";
-import StudentReports from "./pages/StudentReports";
 import Dashboard from "./pages/Dashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
-import Attendance from "./pages/Attendance";
 import Students from "./pages/Students";
+import Attendance from "./pages/Attendance";
+import AttendanceHistory from "./pages/AttendanceHistory";
 import Teachers from "./pages/Teachers";
 import Reports from "./pages/Reports";
+import StudentReports from "./pages/StudentReports";
 import Settings from "./pages/Settings";
-import AttendanceHistory from "./pages/AttendanceHistory";
+import Classes from "./pages/Classes";
 
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -21,14 +22,31 @@ function App() {
     <BrowserRouter>
       <Routes>
 
+        {/* PUBLIC */}
+
         <Route path="/" element={<LoginPage />} />
-        <Route path="/teacher-login" element={<TeacherLogin />} />
+
+        <Route
+          path="/teacher-login"
+          element={<TeacherLogin />}
+        />
+
+        {/* ADMIN */}
 
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/classes"
+          element={
+            <ProtectedRoute>
+              <Classes />
             </ProtectedRoute>
           }
         />
@@ -52,6 +70,15 @@ function App() {
         />
 
         <Route
+          path="/student-reports"
+          element={
+            <ProtectedRoute>
+              <StudentReports />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/settings"
           element={
             <ProtectedRoute>
@@ -59,6 +86,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* TEACHER */}
 
         <Route
           path="/teacher-dashboard"
@@ -93,15 +122,6 @@ function App() {
             <AuthRoute>
               <AttendanceHistory />
             </AuthRoute>
-          }
-        />
-
-        <Route
-          path="/student-reports"
-          element={
-            <ProtectedRoute>
-              <StudentReports />
-            </ProtectedRoute>
           }
         />
 

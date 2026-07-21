@@ -7,6 +7,7 @@ import {
   History,
   LogOut,
   GraduationCap,
+  Building2,
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
@@ -53,6 +54,11 @@ function Sidebar() {
           icon: Home,
           label: "Dashboard",
           path: "/dashboard",
+        },
+        {
+          icon: Building2,
+          label: "Classes",
+          path: "/classes",
         },
         {
           icon: ClipboardCheck,
@@ -106,116 +112,66 @@ function Sidebar() {
   }
 
   return (
-    <aside className="flex min-h-screen w-72 flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-r border-slate-800 shadow-2xl px-6 py-7">
+    <aside className="flex min-h-screen w-64 flex-col border-r border-slate-800 bg-slate-900 px-6 py-7 shadow-xl">
 
-      {/* Logo */}
+      <div>
+        <h1 className="mb-1 text-3xl font-extrabold text-white">
+          Attend<span className="text-blue-500">X</span>
+        </h1>
 
-      <div className="mb-10">
-
-        <div className="flex items-center gap-4">
-
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 text-2xl font-bold text-white shadow-lg">
-            A
-          </div>
-
-          <div>
-
-            <h1 className="text-3xl font-extrabold tracking-wide text-white">
-              Attend
-              <span className="text-cyan-400">X</span>
-            </h1>
-
-            <p className="text-sm text-slate-400">
-              Smart Attendance System
-            </p>
-
-          </div>
-
-        </div>
-
+        <p className="mb-8 text-sm text-slate-500">
+          Attendance Management
+        </p>
       </div>
 
-      {/* Navigation */}
-
-      <nav className="flex-1">
-
-        <h2 className="mb-4 ml-2 text-xs font-bold uppercase tracking-widest text-slate-500">
-          Navigation
-        </h2>
-
-        <div className="space-y-2">
-
-          {menuItems.map(({ icon: Icon, label, path }) => (
-
-            <NavLink
-              key={label}
-              to={path}
-              end
-              className={({ isActive }) =>
-                `group flex items-center gap-4 rounded-2xl px-5 py-3 transition-all duration-300 ${
-                  isActive
-                    ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-xl"
-                    : "text-slate-300 hover:bg-slate-800 hover:translate-x-2 hover:text-white"
-                }`
-              }
-            >
-
-              <Icon
-                size={21}
-                className="transition-transform duration-300 group-hover:scale-110"
-              />
-
-              <span className="font-medium">
-                {label}
-              </span>
-
-            </NavLink>
-
-          ))}
-
-        </div>
-
+      <nav className="flex-1 space-y-2">
+        {menuItems.map(({ icon: Icon, label, path }) => (
+          <NavLink
+            key={label}
+            to={path}
+            end
+            className={({ isActive }) =>
+              `group flex items-center gap-4 rounded-xl px-4 py-3 transition-all duration-300 ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-lg"
+                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
+              }`
+            }
+          >
+            <Icon size={20} />
+            <span>{label}</span>
+          </NavLink>
+        ))}
       </nav>
 
-      {/* User Card */}
+      <div className="mt-6 border-t border-slate-800 pt-6">
 
-      <div className="mt-8 rounded-3xl border border-slate-800 bg-slate-900/80 p-5 backdrop-blur">
+        <div className="mb-5 flex items-center gap-3">
 
-        <div className="mb-5 flex items-center gap-4">
-
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-lg font-bold text-white shadow-lg">
-
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 font-bold text-white">
             {user?.name
               ? user.name.charAt(0).toUpperCase()
               : "A"}
-
           </div>
 
           <div>
-
-            <h3 className="font-bold text-white">
-              {user?.name || "Administrator"}
+            <h3 className="font-semibold text-white">
+              {user?.name || "User"}
             </h3>
 
             <p className="text-sm text-slate-400">
-              {isTeacher
-                ? "Faculty Member"
-                : "System Administrator"}
+              {isTeacher ? "Teacher" : "Administrator"}
             </p>
-
           </div>
 
         </div>
 
         <button
           onClick={handleLogout}
-          className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-red-600 to-red-500 px-4 py-3 font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-xl"
+          className="flex w-full items-center justify-center gap-3 rounded-xl bg-red-600 px-4 py-3 text-white transition hover:bg-red-500"
         >
-
           <LogOut size={20} />
-
           Logout
-
         </button>
 
       </div>
